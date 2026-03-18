@@ -1,1 +1,242 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adult Coaching Notes Generator</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      padding: 30px;
+      margin: 0;
+      color: #1f2937;
+    }
+
+    .site-logo {
+      display: block;
+      margin: 20px auto;
+      max-width: 420px;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: auto;
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 0 12px rgba(0,0,0,.10);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #124734;
+    }
+
+    .subtitle {
+      color: #475569;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 950px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-section,
+    .output-section {
+      background: #f9fbff;
+      border: 1px solid #dbe7ff;
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .generate-btn { background: #2563eb; }
+    .copy-btn { background: #0f766e; }
+    .clear-btn { background: #dc2626; }
+    .print-btn { background: #64748b; }
+
+    .bluebox {
+      background: #dbe8f7;
+      padding: 20px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      min-height: 650px;
+      border: 1px solid #bfd3ea;
+      line-height: 1.65;
+    }
+
+    @media print {
+      .form-section,
+      .button-row,
+      h1,
+      .subtitle {
+        display: none !important;
+      }
+
+      .bluebox {
+        background: white;
+        border: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<img src="logo.png" class="site-logo">
+
+<div class="container">
+  <h1>Adult Coaching Notes Generator</h1>
+
+  <div class="subtitle">
+    Type into the fields on the left. The formatted notes appear on the right.
+    Do NOT type last names!
+  </div>
+
+  <div class="layout">
+
+    <div class="form-section">
+
+      <label>Top Career #1 *</label>
+      <input id="career1" oninput="generate()" />
+
+      <label>Top Career #2 *</label>
+      <input id="career2" oninput="generate()" />
+
+      <label>Top Career #3 *</label>
+      <input id="career3" oninput="generate()" />
+
+      <label>Phase</label>
+      <input id="phase" oninput="generate()" />
+
+      <label>Interests, Clubs, Sports</label>
+      <textarea id="interests" oninput="generate()"></textarea>
+
+      <label>Resources Shared</label>
+      <textarea id="resources" oninput="generate()"></textarea>
+
+      <label>Next Steps *</label>
+      <textarea id="next" oninput="generate()"></textarea>
+
+      <label>Goals and Coaching Summary * (Information will be added in other platform)</label>
+      <textarea id="summary" style="min-height:220px;" oninput="generate()"></textarea>
+
+      <div class="button-row">
+        <button class="generate-btn" onclick="generate()">Generate</button>
+        <button class="copy-btn" onclick="copyText()">Copy</button>
+        <button class="clear-btn" onclick="clearForm()">Clear</button>
+        <button class="print-btn" onclick="window.print()">Print</button>
+      </div>
+
+    </div>
+
+    <div class="output-section">
+      <div class="bluebox" id="output">Your formatted notes will appear here.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function buildSection(title, value) {
+  if (!value.trim()) return "";
+  return `\n\n${title}:\n${value}`;
+}
+
+function generate() {
+  const c1 = career1.value;
+  const c2 = career2.value;
+  const c3 = career3.value;
+  const phase = document.getElementById("phase").value;
+  const interests = document.getElementById("interests").value;
+  const resources = document.getElementById("resources").value;
+  const next = document.getElementById("next").value;
+  const summary = document.getElementById("summary").value;
+
+  let result = `Top 3 Careers:
+1. ${c1} *
+2. ${c2} *
+3. ${c3} *`;
+
+  result += buildSection("Phase", phase);
+  result += buildSection("Interests", interests);
+  result += buildSection("Resources", resources);
+  result += buildSection("Next Steps *", next);
+  result += buildSection("Goals and Coaching Summary *", summary);
+
+  output.innerText = result;
+}
+
+async function copyText() {
+  await navigator.clipboard.writeText(output.innerText);
+  alert("Copied!");
+}
+
+function clearForm() {
+  document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+  generate();
+}
+
+generate();
+</script>
+
+</body>
+</html>
+
