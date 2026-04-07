@@ -121,6 +121,48 @@
       line-height: 1.65;
     }
 
+    .holland-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .holland-btn {
+      background: #e2e8f0;
+      color: #1f2937;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .holland-btn:hover {
+      background: #dbeafe;
+      border-color: #93c5fd;
+    }
+
+    .holland-btn.selected {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .selected-codes-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+    }
+
     @media print {
       .form-section,
       .button-row,
@@ -139,14 +181,14 @@
 
 <body>
 
-<img src="logo.png" class="site-logo">
+<img src="logo.png" class="site-logo" alt="Logo">
 
 <div class="container">
   <h1>Adult Coaching Notes Generator</h1>
 
   <div class="subtitle">
     Type into the fields on the left. The formatted notes appear on the right.
-    Avoid using participant last names for client privacy and data protection. 
+    Avoid using participant last names for client privacy and data protection.
     All sections are required for standard submissions. If this is a Work Ohio submission, complete only the fields marked with an asterisk (*) and you may leave all other fields blank.
   </div>
 
@@ -154,20 +196,32 @@
 
     <div class="form-section">
 
-      <label>* Top Career #1 </label>
+      <label>* Top Career #1</label>
       <input id="career1" oninput="generate()" />
 
-      <label>* Top Career #2 </label>
+      <label>* Top Career #2</label>
       <input id="career2" oninput="generate()" />
 
-      <label>* Top Career #3 </label>
+      <label>* Top Career #3</label>
       <input id="career3" oninput="generate()" />
 
       <label>Phase</label>
       <input id="phase" oninput="generate()" />
 
-      <label>Top 3 Holland Codes (Realistic, Investigative, Artistic, Social, Enterprising, and Conventional)</label>
-<input id="hollandCodes" oninput="generate()" />
+      <label>Top 3 Holland Codes</label>
+      <div class="small-note">Click up to 3: Realistic, Investigative, Artistic, Social, Enterprising, Conventional</div>
+
+      <div class="holland-grid">
+        <button type="button" class="holland-btn" data-code="Realistic" onclick="toggleHolland(this)">Realistic</button>
+        <button type="button" class="holland-btn" data-code="Investigative" onclick="toggleHolland(this)">Investigative</button>
+        <button type="button" class="holland-btn" data-code="Artistic" onclick="toggleHolland(this)">Artistic</button>
+        <button type="button" class="holland-btn" data-code="Social" onclick="toggleHolland(this)">Social</button>
+        <button type="button" class="holland-btn" data-code="Enterprising" onclick="toggleHolland(this)">Enterprising</button>
+        <button type="button" class="holland-btn" data-code="Conventional" onclick="toggleHolland(this)">Conventional</button>
+      </div>
+
+      <div class="selected-codes-box" id="selectedCodesDisplay">No Holland Codes selected yet.</div>
+      <input type="hidden" id="hollandCodes" />
 
       <label>Interests, Clubs, Sports</label>
       <textarea id="interests" oninput="generate()"></textarea>
@@ -175,17 +229,17 @@
       <label>Resources Shared</label>
       <textarea id="resources" oninput="generate()"></textarea>
 
-      <label>* Next Steps </label>
+      <label>* Next Steps</label>
       <textarea id="next" oninput="generate()"></textarea>
 
       <label>* Goals and Coaching Summary (Information will be added in other platform)</label>
       <textarea id="summary" style="min-height:220px;" oninput="generate()"></textarea>
 
       <div class="button-row">
-        <button class="generate-btn" onclick="generate()">Generate</button>
-        <button class="copy-btn" onclick="copyText()">Copy</button>
-        <button class="clear-btn" onclick="clearForm()">Clear</button>
-        <button class="print-btn" onclick="window.print()">Print</button>
+        <button type="button" class="generate-btn" onclick="generate()">Generate</button>
+        <button type="button" class="copy-btn" onclick="copyText()">Copy</button>
+        <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
+        <button type="button" class="print-btn" onclick="window.print()">Print</button>
       </div>
 
     </div>
@@ -198,48 +252,83 @@
 </div>
 
 <script>
-function buildSection(title, value) {
-  if (!value.trim()) return "";
-  return `\n\n${title}:\n${value}`;
-}
+  let selectedHollandCodes = [];
 
-function generate() {
-  const c1 = document.getElementById("career1").value;
-  const c2 = document.getElementById("career2").value;
-  const c3 = document.getElementById("career3").value;
-  const phase = document.getElementById("phase").value;
-  const hollandCodes = document.getElementById("hollandCodes").value;
-  const interests = document.getElementById("interests").value;
-  const resources = document.getElementById("resources").value;
-  const next = document.getElementById("next").value;
-  const summary = document.getElementById("summary").value;
+  function buildSection(title, value) {
+    if (!value.trim()) return "";
+    return `\n\n${title}:\n${value}`;
+  }
 
-  let result = `Top 3 Careers:
+  function toggleHolland(button) {
+    const code = button.getAttribute("data-code");
+
+    if (selectedHollandCodes.includes(code)) {
+      selectedHollandCodes = selectedHollandCodes.filter(item => item !== code);
+      button.classList.remove("selected");
+    } else {
+      if (selectedHollandCodes.length >= 3) {
+        alert("You can only select up to 3 Holland Codes.");
+        return;
+      }
+      selectedHollandCodes.push(code);
+      button.classList.add("selected");
+    }
+
+    document.getElementById("hollandCodes").value = selectedHollandCodes.join(", ");
+
+    const display = document.getElementById("selectedCodesDisplay");
+    display.textContent = selectedHollandCodes.length
+      ? selectedHollandCodes.join(", ")
+      : "No Holland Codes selected yet.";
+
+    generate();
+  }
+
+  function generate() {
+    const c1 = document.getElementById("career1").value;
+    const c2 = document.getElementById("career2").value;
+    const c3 = document.getElementById("career3").value;
+    const phase = document.getElementById("phase").value;
+    const hollandCodes = document.getElementById("hollandCodes").value;
+    const interests = document.getElementById("interests").value;
+    const resources = document.getElementById("resources").value;
+    const next = document.getElementById("next").value;
+    const summary = document.getElementById("summary").value;
+
+    let result = `Top 3 Careers:
 1. ${c1}
 2. ${c2}
 3. ${c3}`;
 
-  result += buildSection("Phase", phase);
-  result += buildSection("Top 3 Holland Codes", hollandCodes);
-  result += buildSection("Interests", interests);
-  result += buildSection("Resources", resources);
-  result += buildSection("Next Steps *", next);
-  result += buildSection("Goals and Coaching Summary *", summary);
+    result += buildSection("Phase", phase);
+    result += buildSection("Top 3 Holland Codes", hollandCodes);
+    result += buildSection("Interests", interests);
+    result += buildSection("Resources", resources);
+    result += buildSection("Next Steps *", next);
+    result += buildSection("Goals and Coaching Summary *", summary);
 
-  document.getElementById("output").innerText = result;
-}
+    document.getElementById("output").innerText = result;
+  }
 
-async function copyText() {
-  await navigator.clipboard.writeText(document.getElementById("output").innerText);
-  alert("Copied!");
-}
+  async function copyText() {
+    await navigator.clipboard.writeText(document.getElementById("output").innerText);
+    alert("Copied!");
+  }
 
-function clearForm() {
-  document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+  function clearForm() {
+    document.querySelectorAll("input:not([type='hidden']), textarea").forEach(el => el.value = "");
+    document.getElementById("hollandCodes").value = "";
+    selectedHollandCodes = [];
+
+    document.querySelectorAll(".holland-btn").forEach(btn => {
+      btn.classList.remove("selected");
+    });
+
+    document.getElementById("selectedCodesDisplay").textContent = "No Holland Codes selected yet.";
+    generate();
+  }
+
   generate();
-}
-
-generate();
 </script>
 
 </body>
