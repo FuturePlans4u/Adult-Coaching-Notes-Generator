@@ -309,18 +309,7 @@ function build(title, val) {
 function buildPhase(val) {
   if (!val.trim()) return "";
 
-  let description = "";
-
-  const phaseLower = val.toLowerCase();
-
-  if (phaseLower.includes("discovery")) {
-    description = "The individual is actively exploring career options and identifying interests, strengths, and potential pathways.";
-  } 
-  else if (phaseLower.includes("engagement")) {
-    description = "The individual is actively engaging in opportunities to gain exposure, build knowledge, and further develop career interests.";
-  }
-
-  return `\n\nPhase:\n${val}${description ? `\n${description}` : ""}`;
+  return `\n\nPhase:\n${val}\n\nDiscovery: The individual is still exploring potential career interests and identifying what they would like to pursue.\nEngagement: The individual is seeking opportunities to engage, gain exposure, and learn more about career options.`;
 }
 
 function copyText() {
