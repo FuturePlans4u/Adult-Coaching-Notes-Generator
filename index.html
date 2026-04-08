@@ -6,7 +6,9 @@
 <title>Adult Coaching Notes Generator</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: Arial, sans-serif;
@@ -28,7 +30,7 @@ body {
   background: white;
   padding: 28px;
   border-radius: 14px;
-  box-shadow: 0 0 12px rgba(0,0,0,.10);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.10);
 }
 
 h1 {
@@ -56,15 +58,18 @@ label {
   font-weight: 700;
 }
 
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
+  font-size: 14px;
 }
 
 textarea {
   min-height: 90px;
+  resize: vertical;
 }
 
 .button-row {
@@ -81,11 +86,20 @@ button {
   color: white;
   font-weight: 700;
   cursor: pointer;
+  font-size: 14px;
 }
 
-.copy-btn { background: #0f766e; }
-.clear-btn { background: #dc2626; }
-.print-btn { background: #64748b; }
+.copy-btn {
+  background: #0f766e;
+}
+
+.clear-btn {
+  background: #dc2626;
+}
+
+.print-btn {
+  background: #64748b;
+}
 
 .bluebox {
   background: #dbe8f7;
@@ -93,6 +107,7 @@ button {
   border-radius: 10px;
   white-space: pre-wrap;
   min-height: 650px;
+  line-height: 1.5;
 }
 
 .holland-grid {
@@ -154,6 +169,7 @@ button {
   padding: 10px;
   background: #f8fafc;
   border-radius: 8px;
+  border: 1px solid #dbe7ff;
 }
 
 .phase-grid {
@@ -170,9 +186,9 @@ button {
   border-radius: 8px;
   padding: 12px;
   font-weight: 700;
-  text-align: left;
   cursor: pointer;
   transition: 0.2s ease;
+  text-align: center;
 }
 
 .phase-btn:hover {
@@ -184,16 +200,50 @@ button {
   background: #2563eb;
   color: white;
   border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .phase-description {
-  margin-top: 8px;
-  padding: 10px 12px;
+  margin-top: 10px;
+  padding: 12px;
   background: #f8fafc;
   border: 1px solid #dbe7ff;
   border-radius: 8px;
-  color: #475569;
+  color: #334155;
   line-height: 1.5;
+  font-size: 14px;
+}
+
+.phase-description strong {
+  color: #1e3a8a;
+}
+
+@media print {
+  body {
+    background: white;
+    padding: 0;
+  }
+
+  .container,
+  .form-section,
+  .output-section {
+    box-shadow: none;
+    border: none;
+  }
+
+  .form-section {
+    display: none;
+  }
+
+  .layout {
+    display: block;
+  }
+
+  .bluebox {
+    background: white;
+    min-height: auto;
+    padding: 0;
+  }
 }
 </style>
 </head>
@@ -210,22 +260,18 @@ button {
     <div class="form-section">
 
       <label>* Top Career #1</label>
-      <input id="career1" oninput="generate()" />
+      <input id="career1" oninput="generate()">
 
       <label>* Top Career #2</label>
-      <input id="career2" oninput="generate()" />
+      <input id="career2" oninput="generate()">
 
       <label>* Top Career #3</label>
-      <input id="career3" oninput="generate()" />
+      <input id="career3" oninput="generate()">
 
       <label>Phase</label>
       <div class="phase-grid">
-        <button type="button" class="phase-btn" data-phase="Discovery" onclick="selectPhase(this)">
-          Discovery
-        </button>
-        <button type="button" class="phase-btn" data-phase="Engagement" onclick="selectPhase(this)">
-          Engagement
-        </button>
+        <button type="button" class="phase-btn" data-phase="Discovery" onclick="selectPhase(this)">Discovery</button>
+        <button type="button" class="phase-btn" data-phase="Engagement" onclick="selectPhase(this)">Engagement</button>
       </div>
 
       <div class="phase-description">
@@ -233,31 +279,25 @@ button {
         <strong>Engagement:</strong> The individual is seeking opportunities to engage, gain exposure, and learn more about career options.
       </div>
 
-      <input id="phase" type="hidden" />
+      <input id="phase" type="hidden">
 
       <label>Top 3 Holland Codes</label>
-
       <div class="holland-grid">
         <button type="button" class="holland-btn" data-code="Realistic" onclick="toggleHolland(this)">
           <span class="rank"></span>Realistic
         </button>
-
         <button type="button" class="holland-btn" data-code="Investigative" onclick="toggleHolland(this)">
           <span class="rank"></span>Investigative
         </button>
-
         <button type="button" class="holland-btn" data-code="Artistic" onclick="toggleHolland(this)">
           <span class="rank"></span>Artistic
         </button>
-
         <button type="button" class="holland-btn" data-code="Social" onclick="toggleHolland(this)">
           <span class="rank"></span>Social
         </button>
-
         <button type="button" class="holland-btn" data-code="Enterprising" onclick="toggleHolland(this)">
           <span class="rank"></span>Enterprising
         </button>
-
         <button type="button" class="holland-btn" data-code="Conventional" onclick="toggleHolland(this)">
           <span class="rank"></span>Conventional
         </button>
@@ -298,14 +338,15 @@ let selectedPhase = "";
 
 function selectPhase(button) {
   const phase = button.dataset.phase;
+  const hiddenPhase = document.getElementById("phase");
 
   if (selectedPhase === phase) {
     selectedPhase = "";
-    document.getElementById("phase").value = "";
+    hiddenPhase.value = "";
     button.classList.remove("selected");
   } else {
     selectedPhase = phase;
-    document.getElementById("phase").value = phase;
+    hiddenPhase.value = phase;
 
     document.querySelectorAll(".phase-btn").forEach(btn => {
       btn.classList.remove("selected");
@@ -357,21 +398,31 @@ function updateRanks() {
 }
 
 function generate() {
+  const career1 = document.getElementById("career1").value;
+  const career2 = document.getElementById("career2").value;
+  const career3 = document.getElementById("career3").value;
+  const phase = document.getElementById("phase").value;
+  const interests = document.getElementById("interests").value;
+  const resources = document.getElementById("resources").value;
+  const next = document.getElementById("next").value;
+  const summary = document.getElementById("summary").value;
+  const output = document.getElementById("output");
+
   const holland = selectedHollandCodes.length
     ? selectedHollandCodes.map((c, i) => `${i + 1}. ${c}`).join("\n")
     : "";
 
   let result = `Top 3 Careers:
-1. ${career1.value}
-2. ${career2.value}
-3. ${career3.value}`;
+1. ${career1}
+2. ${career2}
+3. ${career3}`;
 
-  result += build("Phase", phase.value);
+  result += build("Phase", phase);
   result += build("Top 3 Holland Codes", holland);
-  result += build("Interests", interests.value);
-  result += build("Resources", resources.value);
-  result += build("Next Steps *", next.value);
-  result += build("Summary *", summary.value);
+  result += build("Interests", interests);
+  result += build("Resources", resources);
+  result += build("Next Steps *", next);
+  result += build("Summary *", summary);
 
   output.innerText = result;
 }
@@ -381,17 +432,31 @@ function build(title, val) {
 }
 
 function copyText() {
-  navigator.clipboard.writeText(output.innerText);
+  const output = document.getElementById("output").innerText;
+  navigator.clipboard.writeText(output);
   alert("Copied!");
 }
 
 function clearForm() {
-  document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+  document.getElementById("career1").value = "";
+  document.getElementById("career2").value = "";
+  document.getElementById("career3").value = "";
+  document.getElementById("phase").value = "";
+  document.getElementById("interests").value = "";
+  document.getElementById("resources").value = "";
+  document.getElementById("next").value = "";
+  document.getElementById("summary").value = "";
+
   selectedHollandCodes = [];
   selectedPhase = "";
 
-  document.querySelectorAll(".holland-btn").forEach(btn => btn.classList.remove("selected"));
-  document.querySelectorAll(".phase-btn").forEach(btn => btn.classList.remove("selected"));
+  document.querySelectorAll(".holland-btn").forEach(btn => {
+    btn.classList.remove("selected");
+  });
+
+  document.querySelectorAll(".phase-btn").forEach(btn => {
+    btn.classList.remove("selected");
+  });
 
   updateRanks();
   generate();
