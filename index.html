@@ -1,334 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adult Coaching Notes Generator</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adult Coaching Notes Generator</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+* { box-sizing: border-box; }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
-      padding: 30px;
-      margin: 0;
-      color: #1f2937;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6fb;
+  padding: 30px;
+  margin: 0;
+  color: #1f2937;
+}
 
-    .site-logo {
-      display: block;
-      margin: 20px auto;
-      max-width: 420px;
-    }
+.site-logo {
+  display: block;
+  margin: 20px auto;
+  max-width: 420px;
+}
 
-    .container {
-      max-width: 1150px;
-      margin: auto;
-      background: white;
-      padding: 28px;
-      border-radius: 14px;
-      box-shadow: 0 0 12px rgba(0,0,0,.10);
-    }
+.container {
+  max-width: 1150px;
+  margin: auto;
+  background: white;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 0 12px rgba(0,0,0,.10);
+}
 
-    h1 {
-      margin-top: 0;
-      color: #124734;
-    }
+h1 { margin-top: 0; color: #124734; }
 
-    .subtitle {
-      color: #475569;
-      margin-bottom: 22px;
-      line-height: 1.5;
-    }
+.subtitle {
+  color: #475569;
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
 
-    .layout {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 28px;
-      align-items: start;
-    }
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+}
 
-    @media (max-width: 950px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
+.form-section,
+.output-section {
+  background: #f9fbff;
+  border: 1px solid #dbe7ff;
+  border-radius: 14px;
+  padding: 20px;
+}
 
-    .form-section,
-    .output-section {
-      background: #f9fbff;
-      border: 1px solid #dbe7ff;
-      border-radius: 14px;
-      padding: 20px;
-    }
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 700;
+}
 
-    label {
-      display: block;
-      margin-top: 12px;
-      margin-bottom: 6px;
-      font-weight: 700;
-    }
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 14px;
-    }
+textarea { min-height: 90px; }
 
-    textarea {
-      resize: vertical;
-      min-height: 90px;
-    }
+.button-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
 
-    .small-note {
-      font-size: 13px;
-      color: #64748b;
-      margin-top: 4px;
-    }
+button {
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-    .button-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-top: 18px;
-    }
+.generate-btn { background: #2563eb; }
+.copy-btn { background: #0f766e; }
+.clear-btn { background: #dc2626; }
+.print-btn { background: #64748b; }
 
-    button {
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-    }
+.bluebox {
+  background: #dbe8f7;
+  padding: 20px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  min-height: 650px;
+}
 
-    .generate-btn { background: #2563eb; }
-    .copy-btn { background: #0f766e; }
-    .clear-btn { background: #dc2626; }
-    .print-btn { background: #64748b; }
+.holland-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
 
-    .bluebox {
-      background: #dbe8f7;
-      padding: 20px;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      min-height: 650px;
-      border: 1px solid #bfd3ea;
-      line-height: 1.65;
-    }
+/* BUTTON */
+.holland-btn {
+  position: relative;
+  background: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
-    .holland-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 8px;
-    }
+.holland-btn.selected {
+  background: #2563eb;
+  color: white;
+}
 
-    .holland-btn {
-      background: #e2e8f0;
-      color: #1f2937;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      padding: 10px;
-      font-weight: 700;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
+/* RANK BUBBLE */
+.rank {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #1d4ed8;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 999px;
+  opacity: 0;
+  transform: scale(0.5);
+}
 
-    .holland-btn:hover {
-      background: #dbeafe;
-      border-color: #93c5fd;
-    }
+/* ANIMATION */
+.rank.show {
+  animation: pop 0.25s ease forwards;
+}
 
-    .holland-btn.selected {
-      background: #2563eb;
-      color: white;
-      border-color: #2563eb;
-    }
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
-    .selected-codes-box {
-      margin-top: 10px;
-      padding: 10px 12px;
-      background: #f8fafc;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 14px;
-      min-height: 42px;
-      display: flex;
-      align-items: center;
-    }
+.selected-codes-box {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
 
-    @media print {
-      .form-section,
-      .button-row,
-      h1,
-      .subtitle {
-        display: none !important;
-      }
-
-      .bluebox {
-        background: white;
-        border: none;
-      }
-    }
-  </style>
+</style>
 </head>
 
 <body>
 
-<img src="logo.png" class="site-logo" alt="Logo">
+<img src="logo.png" class="site-logo">
 
 <div class="container">
-  <h1>Adult Coaching Notes Generator</h1>
+<h1>Adult Coaching Notes Generator</h1>
 
-  <div class="subtitle">
-    Type into the fields on the left. The formatted notes appear on the right.
-    Avoid using participant last names for client privacy and data protection.
-    All sections are required for standard submissions. If this is a Work Ohio submission, complete only the fields marked with an asterisk (*) and you may leave all other fields blank.
-  </div>
+<div class="layout">
 
-  <div class="layout">
+<div class="form-section">
 
-    <div class="form-section">
+<label>* Top Career #1</label>
+<input id="career1" oninput="generate()" />
 
-      <label>* Top Career #1</label>
-      <input id="career1" oninput="generate()" />
+<label>* Top Career #2</label>
+<input id="career2" oninput="generate()" />
 
-      <label>* Top Career #2</label>
-      <input id="career2" oninput="generate()" />
+<label>* Top Career #3</label>
+<input id="career3" oninput="generate()" />
 
-      <label>* Top Career #3</label>
-      <input id="career3" oninput="generate()" />
+<label>Phase</label>
+<input id="phase" oninput="generate()" />
 
-      <label>Phase</label>
-      <input id="phase" oninput="generate()" />
+<label>Top 3 Holland Codes</label>
 
-      <label>Top 3 Holland Codes</label>
-      <div class="small-note">Click up to 3: Realistic, Investigative, Artistic, Social, Enterprising, Conventional</div>
+<div class="holland-grid">
+<button class="holland-btn" data-code="Realistic" onclick="toggleHolland(this)">
+<span class="rank"></span>Realistic</button>
 
-      <div class="holland-grid">
-        <button type="button" class="holland-btn" data-code="Realistic" onclick="toggleHolland(this)">Realistic</button>
-        <button type="button" class="holland-btn" data-code="Investigative" onclick="toggleHolland(this)">Investigative</button>
-        <button type="button" class="holland-btn" data-code="Artistic" onclick="toggleHolland(this)">Artistic</button>
-        <button type="button" class="holland-btn" data-code="Social" onclick="toggleHolland(this)">Social</button>
-        <button type="button" class="holland-btn" data-code="Enterprising" onclick="toggleHolland(this)">Enterprising</button>
-        <button type="button" class="holland-btn" data-code="Conventional" onclick="toggleHolland(this)">Conventional</button>
-      </div>
+<button class="holland-btn" data-code="Investigative" onclick="toggleHolland(this)">
+<span class="rank"></span>Investigative</button>
 
-      <div class="selected-codes-box" id="selectedCodesDisplay">No Holland Codes selected yet.</div>
-      <input type="hidden" id="hollandCodes" />
+<button class="holland-btn" data-code="Artistic" onclick="toggleHolland(this)">
+<span class="rank"></span>Artistic</button>
 
-      <label>Interests, Clubs, Sports</label>
-      <textarea id="interests" oninput="generate()"></textarea>
+<button class="holland-btn" data-code="Social" onclick="toggleHolland(this)">
+<span class="rank"></span>Social</button>
 
-      <label>Resources Shared</label>
-      <textarea id="resources" oninput="generate()"></textarea>
+<button class="holland-btn" data-code="Enterprising" onclick="toggleHolland(this)">
+<span class="rank"></span>Enterprising</button>
 
-      <label>* Next Steps</label>
-      <textarea id="next" oninput="generate()"></textarea>
+<button class="holland-btn" data-code="Conventional" onclick="toggleHolland(this)">
+<span class="rank"></span>Conventional</button>
+</div>
 
-      <label>* Goals and Coaching Summary (Information will be added in other platform)</label>
-      <textarea id="summary" style="min-height:220px;" oninput="generate()"></textarea>
+<div class="selected-codes-box" id="selectedCodesDisplay">No Holland Codes selected yet.</div>
 
-      <div class="button-row">
-        <button type="button" class="generate-btn" onclick="generate()">Generate</button>
-        <button type="button" class="copy-btn" onclick="copyText()">Copy</button>
-        <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
-        <button type="button" class="print-btn" onclick="window.print()">Print</button>
-      </div>
+<label>Interests</label>
+<textarea id="interests" oninput="generate()"></textarea>
 
-    </div>
+<label>Resources</label>
+<textarea id="resources" oninput="generate()"></textarea>
 
-    <div class="output-section">
-      <div class="bluebox" id="output">Your formatted notes will appear here.</div>
-    </div>
+<label>* Next Steps</label>
+<textarea id="next" oninput="generate()"></textarea>
 
-  </div>
+<label>* Summary</label>
+<textarea id="summary" oninput="generate()"></textarea>
+
+<div class="button-row">
+<button class="copy-btn" onclick="copyText()">Copy</button>
+<button class="clear-btn" onclick="clearForm()">Clear</button>
+<button class="print-btn" onclick="window.print()">Print</button>
+</div>
+
+</div>
+
+<div class="output-section">
+<div class="bluebox" id="output"></div>
+</div>
+
+</div>
 </div>
 
 <script>
-  let selectedHollandCodes = [];
+let selectedHollandCodes = [];
 
-  function buildSection(title, value) {
-    if (!value.trim()) return "";
-    return `\n\n${title}:\n${value}`;
+function toggleHolland(button) {
+  const code = button.dataset.code;
+
+  if (selectedHollandCodes.includes(code)) {
+    selectedHollandCodes = selectedHollandCodes.filter(c => c !== code);
+    button.classList.remove("selected");
+  } else {
+    if (selectedHollandCodes.length >= 3) return;
+    selectedHollandCodes.push(code);
+    button.classList.add("selected");
   }
 
-  function toggleHolland(button) {
-    const code = button.getAttribute("data-code");
-
-    if (selectedHollandCodes.includes(code)) {
-      selectedHollandCodes = selectedHollandCodes.filter(item => item !== code);
-      button.classList.remove("selected");
-    } else {
-      if (selectedHollandCodes.length >= 3) {
-        alert("You can only select up to 3 Holland Codes.");
-        return;
-      }
-      selectedHollandCodes.push(code);
-      button.classList.add("selected");
-    }
-
-    document.getElementById("hollandCodes").value = selectedHollandCodes.join(", ");
-
-    const display = document.getElementById("selectedCodesDisplay");
-    display.textContent = selectedHollandCodes.length
-      ? selectedHollandCodes.join(", ")
-      : "No Holland Codes selected yet.";
-
-    generate();
-  }
-
-  function generate() {
-    const c1 = document.getElementById("career1").value;
-    const c2 = document.getElementById("career2").value;
-    const c3 = document.getElementById("career3").value;
-    const phase = document.getElementById("phase").value;
-    const hollandCodes = document.getElementById("hollandCodes").value;
-    const interests = document.getElementById("interests").value;
-    const resources = document.getElementById("resources").value;
-    const next = document.getElementById("next").value;
-    const summary = document.getElementById("summary").value;
-
-    let result = `Top 3 Careers:
-1. ${c1}
-2. ${c2}
-3. ${c3}`;
-
-    result += buildSection("Phase", phase);
-    result += buildSection("Top 3 Holland Codes", hollandCodes);
-    result += buildSection("Interests", interests);
-    result += buildSection("Resources", resources);
-    result += buildSection("Next Steps *", next);
-    result += buildSection("Goals and Coaching Summary *", summary);
-
-    document.getElementById("output").innerText = result;
-  }
-
-  async function copyText() {
-    await navigator.clipboard.writeText(document.getElementById("output").innerText);
-    alert("Copied!");
-  }
-
-  function clearForm() {
-    document.querySelectorAll("input:not([type='hidden']), textarea").forEach(el => el.value = "");
-    document.getElementById("hollandCodes").value = "";
-    selectedHollandCodes = [];
-
-    document.querySelectorAll(".holland-btn").forEach(btn => {
-      btn.classList.remove("selected");
-    });
-
-    document.getElementById("selectedCodesDisplay").textContent = "No Holland Codes selected yet.";
-    generate();
-  }
-
+  updateRanks();
   generate();
+}
+
+function updateRanks() {
+  document.querySelectorAll(".holland-btn").forEach(btn => {
+    const code = btn.dataset.code;
+    const rankEl = btn.querySelector(".rank");
+    const index = selectedHollandCodes.indexOf(code);
+
+    if (index >= 0) {
+      rankEl.textContent = `#${index + 1}`;
+      rankEl.classList.remove("show");
+      void rankEl.offsetWidth;
+      rankEl.classList.add("show");
+    } else {
+      rankEl.textContent = "";
+      rankEl.classList.remove("show");
+    }
+  });
+
+  document.getElementById("selectedCodesDisplay").textContent =
+    selectedHollandCodes.length
+      ? selectedHollandCodes.map((c,i)=>`${i+1}. ${c}`).join(" | ")
+      : "No Holland Codes selected yet.";
+}
+
+function generate() {
+  const holland = selectedHollandCodes.length
+    ? selectedHollandCodes.map((c,i)=>`${i+1}. ${c}`).join("\n")
+    : "";
+
+  let result = `Top 3 Careers:
+1. ${career1.value}
+2. ${career2.value}
+3. ${career3.value}`;
+
+  result += build("Phase", phase.value);
+  result += build("Top 3 Holland Codes", holland);
+  result += build("Interests", interests.value);
+  result += build("Resources", resources.value);
+  result += build("Next Steps *", next.value);
+  result += build("Summary *", summary.value);
+
+  output.innerText = result;
+}
+
+function build(title, val) {
+  return val.trim() ? `\n\n${title}:\n${val}` : "";
+}
+
+function copyText() {
+  navigator.clipboard.writeText(output.innerText);
+  alert("Copied!");
+}
+
+function clearForm() {
+  document.querySelectorAll("input, textarea").forEach(el => el.value = "");
+  selectedHollandCodes = [];
+  document.querySelectorAll(".holland-btn").forEach(btn => btn.classList.remove("selected"));
+  updateRanks();
+  generate();
+}
+
+generate();
 </script>
 
 </body>
