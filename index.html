@@ -292,7 +292,7 @@ function generate() {
 2. ${career2.value}
 3. ${career3.value}`;
 
-  result += build("Phase", phase.value);
+  result += buildPhase(phase.value);
   result += build("Top 3 Holland Codes", holland);
   result += build("Interests", interests.value);
   result += build("Resources", resources.value);
@@ -304,6 +304,23 @@ function generate() {
 
 function build(title, val) {
   return val.trim() ? `\n\n${title}:\n${val}` : "";
+}
+
+function buildPhase(val) {
+  if (!val.trim()) return "";
+
+  let description = "";
+
+  const phaseLower = val.toLowerCase();
+
+  if (phaseLower.includes("discovery")) {
+    description = "The individual is actively exploring career options and identifying interests, strengths, and potential pathways.";
+  } 
+  else if (phaseLower.includes("engagement")) {
+    description = "The individual is actively engaging in opportunities to gain exposure, build knowledge, and further develop career interests.";
+  }
+
+  return `\n\nPhase:\n${val}${description ? `\n${description}` : ""}`;
 }
 
 function copyText() {
