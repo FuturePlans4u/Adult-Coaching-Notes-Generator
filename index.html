@@ -31,15 +31,9 @@ body {
   box-shadow: 0 0 12px rgba(0,0,0,.10);
 }
 
-h1 { 
-  margin-top: 0; 
-  color: #124734; 
-}
-
-.subtitle {
-  color: #475569;
-  margin-bottom: 22px;
-  line-height: 1.5;
+h1 {
+  margin-top: 0;
+  color: #124734;
 }
 
 .layout {
@@ -62,22 +56,6 @@ label {
   font-weight: 700;
 }
 
-.phase-help {
-  margin-top: 6px;
-  margin-bottom: 8px;
-  padding: 10px 12px;
-  background: #eef4ff;
-  border: 1px solid #c7d7fe;
-  border-radius: 8px;
-  color: #334155;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.phase-help strong {
-  color: #1e3a8a;
-}
-
 input, textarea {
   width: 100%;
   padding: 10px;
@@ -85,8 +63,8 @@ input, textarea {
   border-radius: 8px;
 }
 
-textarea { 
-  min-height: 90px; 
+textarea {
+  min-height: 90px;
 }
 
 .button-row {
@@ -177,6 +155,46 @@ button {
   background: #f8fafc;
   border-radius: 8px;
 }
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.phase-btn {
+  background: #ffffff;
+  color: #1f2937;
+  border: 2px solid #94a3b8;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.phase-btn:hover {
+  background: #e0f2fe;
+  border-color: #3b82f6;
+}
+
+.phase-btn.selected {
+  background: #2563eb;
+  color: white;
+  border-color: #1d4ed8;
+}
+
+.phase-description {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #dbe7ff;
+  border-radius: 8px;
+  color: #475569;
+  line-height: 1.5;
+}
 </style>
 </head>
 
@@ -201,11 +219,21 @@ button {
       <input id="career3" oninput="generate()" />
 
       <label>Phase</label>
-      <div class="phase-help">
-        <strong>Discovery:</strong> Still searching for what they want to do.<br>
-        <strong>Engagement:</strong> Looking for ways to engage and learn about careers.
+      <div class="phase-grid">
+        <button type="button" class="phase-btn" data-phase="Discovery" onclick="selectPhase(this)">
+          Discovery
+        </button>
+        <button type="button" class="phase-btn" data-phase="Engagement" onclick="selectPhase(this)">
+          Engagement
+        </button>
       </div>
-      <input id="phase" oninput="generate()" />
+
+      <div class="phase-description">
+        <strong>Discovery:</strong> The individual is still exploring potential career interests and identifying what they would like to pursue.<br><br>
+        <strong>Engagement:</strong> The individual is seeking opportunities to engage, gain exposure, and learn more about career options.
+      </div>
+
+      <input id="phase" type="hidden" />
 
       <label>Top 3 Holland Codes</label>
 
@@ -266,6 +294,28 @@ button {
 
 <script>
 let selectedHollandCodes = [];
+let selectedPhase = "";
+
+function selectPhase(button) {
+  const phase = button.dataset.phase;
+
+  if (selectedPhase === phase) {
+    selectedPhase = "";
+    document.getElementById("phase").value = "";
+    button.classList.remove("selected");
+  } else {
+    selectedPhase = phase;
+    document.getElementById("phase").value = phase;
+
+    document.querySelectorAll(".phase-btn").forEach(btn => {
+      btn.classList.remove("selected");
+    });
+
+    button.classList.add("selected");
+  }
+
+  generate();
+}
 
 function toggleHolland(button) {
   const code = button.dataset.code;
@@ -338,7 +388,11 @@ function copyText() {
 function clearForm() {
   document.querySelectorAll("input, textarea").forEach(el => el.value = "");
   selectedHollandCodes = [];
+  selectedPhase = "";
+
   document.querySelectorAll(".holland-btn").forEach(btn => btn.classList.remove("selected"));
+  document.querySelectorAll(".phase-btn").forEach(btn => btn.classList.remove("selected"));
+
   updateRanks();
   generate();
 }
