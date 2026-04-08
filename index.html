@@ -107,17 +107,27 @@ button {
 /* BUTTON */
 .holland-btn {
   position: relative;
-  background: #e2e8f0;
+  background: #ffffff;            /* brighter */
+  color: #1f2937;
+  border: 2px solid #94a3b8;      /* stronger border */
   border-radius: 8px;
   padding: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
+/* Hover = visible feedback */
+.holland-btn:hover {
+  background: #e0f2fe;
+  border-color: #3b82f6;
+}
+
+/* Selected = bold + obvious */
 .holland-btn.selected {
   background: #2563eb;
   color: white;
+  border-color: #1d4ed8;
 }
 
 /* RANK BUBBLE */
